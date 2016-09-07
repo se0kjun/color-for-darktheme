@@ -113,7 +113,7 @@ color_dark_theme.hsv2rgb = function(h, s, v, format) {
             b: (_color._b + m) * 255
         }
     else if (_format == 'hex') {
-        return "#" + ((1 << 24) + (((_color._r + m) * 255) << 16) + (((_color._g + m) * 255) << 8) + (_color._b + m) * 255).toString(16).slice(1);
+        return "#" + ((1 << 24) + (Math.floor((_color._r + m) * 255) << 16) + (Math.floor((_color._g + m) * 255) << 8) + Math.floor((_color._b + m) * 255)).toString(16).slice(1);
     }
 }
 
