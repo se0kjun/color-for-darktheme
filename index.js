@@ -1,7 +1,7 @@
 "use strict";
 
 //border, font-color, background-color except for background-image
-function color_dark_theme() {
+function darkenize() {
     this.dark_theme_attribute = [
         'background-color', 
         'color', 
@@ -24,10 +24,10 @@ function color_dark_theme() {
     this.brightness_control = ;
 }
 
-color_dark_theme.prototype.autoColorize = function() {
+darkenize.prototype.autoColorize = function() {
 };
 
-color_dark_theme.prototype.setColorForDarkTheme = function(node, brightness_threshold, brightness_control, preset) {
+darkenize.prototype.setColorForDarkTheme = function(node, brightness_threshold, brightness_control, preset) {
     var computedStyle;
 
     if (typeof window !== undefined)
@@ -52,8 +52,8 @@ color_dark_theme.prototype.setColorForDarkTheme = function(node, brightness_thre
 };
 
 //0 ≤ brightness_threshold ≤ 1 and 0 ≤ brightness_control ≤ 1
-color_dark_theme.prototype.getColorForDarkTheme = function(value, brightness_threshold, brightness_control, preset) {
-    var color = color_dark_theme.parseColor(value),
+darkenize.prototype.getColorForDarkTheme = function(value, brightness_threshold, brightness_control, preset) {
+    var color = darkenize.parseColor(value),
         dark_theme_color = value;
 
     var _brightness_threshold = brightness_threshold || 0.5,
@@ -61,14 +61,14 @@ color_dark_theme.prototype.getColorForDarkTheme = function(value, brightness_thr
         _brightness_weight = 1;
 
     if (color.space == 'rgb') {
-        var hsv_color = color_dark_theme.rgb2hsv(color.value[0], color.value[1], color.value[2]);
+        var hsv_color = darkenize.rgb2hsv(color.value[0], color.value[1], color.value[2]);
         
         if (hsv_color.v > _brightness_threshold) {
             if (brightness_control)
                 hsv_color.v *= _brightness_control;
             else
                 hsv_color.v *= (_brightness_control * _brightness_weight);
-            dark_theme_color = color_dark_theme.hsv2rgb(hsv_color.h, hsv_color.s, hsv_color.v, 'hex');
+            dark_theme_color = darkenize.hsv2rgb(hsv_color.h, hsv_color.s, hsv_color.v, 'hex');
         }
     }
     else if (color.space == 'hsv') {
@@ -77,7 +77,7 @@ color_dark_theme.prototype.getColorForDarkTheme = function(value, brightness_thr
                 color.value[2] *= _brightness_control;
             else
                 color.value[2] *= (_brightness_control * _brightness_weight);
-            dark_theme_color = color_dark_theme.hsv2rgb(color.value[0], color.value[1], color.value[2], 'hex');
+            dark_theme_color = darkenize.hsv2rgb(color.value[0], color.value[1], color.value[2], 'hex');
         }
     }
 
@@ -85,7 +85,7 @@ color_dark_theme.prototype.getColorForDarkTheme = function(value, brightness_thr
 };
 
 //1 ≤ r, g, b < 255
-color_dark_theme.rgb2hsv = function(r, g, b, format) {
+darkenize.rgb2hsv = function(r, g, b, format) {
     var _format = format || 'object',
         _color = {
             _r: r / 255,
@@ -116,7 +116,7 @@ color_dark_theme.rgb2hsv = function(r, g, b, format) {
 }
 
 //0 ≤ h < 360, 0 ≤ s ≤ 1 and 0 ≤ v ≤ 1
-color_dark_theme.hsv2rgb = function(h, s, v, format) {
+darkenize.hsv2rgb = function(h, s, v, format) {
     var _format = format || 'hex',
         _h = (h < 0) ? h + 360 : h,
         _color = {
@@ -165,7 +165,7 @@ color_dark_theme.hsv2rgb = function(h, s, v, format) {
     }
 }
 
-color_dark_theme.parseColor = function(value) {
+darkenize.parseColor = function(value) {
     var param,
         color_space;
 
@@ -205,4 +205,4 @@ color_dark_theme.parseColor = function(value) {
     }
 }
 
-module.exports = color_dark_theme;
+window.darkenize = module.exports = darkenize;
