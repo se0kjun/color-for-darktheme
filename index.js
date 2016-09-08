@@ -2,32 +2,81 @@
 
 //border, font-color, background-color except for background-image
 function color_dark_theme() {
+    this.dark_theme_attribute = [
+        'background-color', 
+        'color', 
+        'border-bottom-color', 
+        'border-top-color', 
+        'border-left-color', 
+        'border-right-color'
+    ];
+
+    this.color_preset = {
+        'text': {'threshold':, 'control':},
+        'background': {'threshold':, 'control':},
+        'border': {'threshold':, 'control':}
+    };
+
+    // svg?
+    this.stop_elem = [];
+    this.dynamic_coloring = false;
+    this.brightness_threshold = ;
+    this.brightness_control = ;
 }
 
-color_dark_theme.prototype.autoScaling = function() {
+color_dark_theme.prototype.autoColorize = function() {
 };
 
-color_dark_theme.prototype.parameterizedScaling = function() {
+color_dark_theme.prototype.setColorForDarkTheme = function(node, brightness_threshold, brightness_control, preset) {
+    var computedStyle;
+
+    if (typeof window !== undefined)
+        computedStyle = window.getComputedStyle(node);
+    else
+        throw "This method is only available in web browser";
+
+    node.style.background-color = 
+        this.getColorForDarkTheme(computedStyle["background-color"], brightness_threshold, brightness_control, preset);
+    node.style.color = 
+        this.getColorForDarkTheme(computedStyle["color"], brightness_threshold, brightness_control, preset);
+    node.style.border-bottom-color = 
+        this.getColorForDarkTheme(computedStyle["border-bottom-color"], brightness_threshold, brightness_control, preset);
+    node.style.border-top-color = 
+        this.getColorForDarkTheme(computedStyle["border-top-color"], brightness_threshold, brightness_control, preset);
+    node.style.border-left-color = 
+        this.getColorForDarkTheme(computedStyle["border-left-color"], brightness_threshold, brightness_control, preset);
+    node.style.border-right-color = 
+        this.getColorForDarkTheme(computedStyle["border-right-color"], brightness_threshold, brightness_control, preset);
+
+    return node;
 };
 
-color_dark_theme.prototype.getColorForDarkTheme = function(value, brightness_threshold, brightness_control) {
-    var color = color_dark_theme.parseColor(value);
-    var dark_theme_color = value;
+//0 ≤ brightness_threshold ≤ 1 and 0 ≤ brightness_control ≤ 1
+color_dark_theme.prototype.getColorForDarkTheme = function(value, brightness_threshold, brightness_control, preset) {
+    var color = color_dark_theme.parseColor(value),
+        dark_theme_color = value;
 
-    var _brightness_threshold = brightness_threshold || 0.5;
-    var _brightness_control = brightness_control || 0.6;
+    var _brightness_threshold = brightness_threshold || 0.5,
+        _brightness_control = brightness_control || 0.3,
+        _brightness_weight = 1;
 
     if (color.space == 'rgb') {
         var hsv_color = color_dark_theme.rgb2hsv(color.value[0], color.value[1], color.value[2]);
         
         if (hsv_color.v > _brightness_threshold) {
-            hsv_color.v *= _brightness_control;
+            if (brightness_control)
+                hsv_color.v *= _brightness_control;
+            else
+                hsv_color.v *= (_brightness_control * _brightness_weight);
             dark_theme_color = color_dark_theme.hsv2rgb(hsv_color.h, hsv_color.s, hsv_color.v, 'hex');
         }
     }
     else if (color.space == 'hsv') {
         if (color.value[2] > _brightness_threshold) {
-            color.value[2] *= brightness_control;
+            if (brightness_control) 
+                color.value[2] *= _brightness_control;
+            else
+                color.value[2] *= (_brightness_control * _brightness_weight);
             dark_theme_color = color_dark_theme.hsv2rgb(color.value[0], color.value[1], color.value[2], 'hex');
         }
     }
@@ -37,17 +86,16 @@ color_dark_theme.prototype.getColorForDarkTheme = function(value, brightness_thr
 
 //1 ≤ r, g, b < 255
 color_dark_theme.rgb2hsv = function(r, g, b, format) {
-    var _format = format || 'object';
-    var _color = {
-        _r: r / 255,
-        _g: g / 255,
-        _b: b / 255
-    };
-
-    var _max_key = Object.keys(_color).reduce(function(a, b){ return _color[a] > _color[b] ? a : b });
-    var _min_key = Object.keys(_color).reduce(function(a, b){ return _color[a] < _color[b] ? a : b });
-    var delta = _color[_max_key] - _color[_min_key];
-    var _h = 60;
+    var _format = format || 'object',
+        _color = {
+            _r: r / 255,
+            _g: g / 255,
+            _b: b / 255
+        },
+        _max_key = Object.keys(_color).reduce(function(a, b){ return _color[a] > _color[b] ? a : b }),
+        _min_key = Object.keys(_color).reduce(function(a, b){ return _color[a] < _color[b] ? a : b }),
+        delta = _color[_max_key] - _color[_min_key],
+        _h = 60;
 
     if (_max_key == "_r") {
         _h *= ( ((_color._g - _color._b) / delta) % 6 );
@@ -69,17 +117,17 @@ color_dark_theme.rgb2hsv = function(r, g, b, format) {
 
 //0 ≤ h < 360, 0 ≤ s ≤ 1 and 0 ≤ v ≤ 1
 color_dark_theme.hsv2rgb = function(h, s, v, format) {
-    var _format = format || 'hex';
-    var _h = (h < 0) ? h + 360 : h;
-    var _color = {
-        _r: 0,
-        _g: 0,
-        _b: 0
-    };
+    var _format = format || 'hex',
+        _h = (h < 0) ? h + 360 : h,
+        _color = {
+            _r: 0,
+            _g: 0,
+            _b: 0
+        };
 
-    var C = s * v;
-    var X = C * (1 - Math.abs( ((_h / 60) % 2) - 1 ));
-    var m = v - C;
+    var C = s * v,
+        X = C * (1 - Math.abs( ((_h / 60) % 2) - 1 )),
+        m = v - C;
 
     if (_h >= 0 && _h < 60) {
         _color._r = C;
@@ -118,8 +166,8 @@ color_dark_theme.hsv2rgb = function(h, s, v, format) {
 }
 
 color_dark_theme.parseColor = function(value) {
-    var param;
-    var color_space;
+    var param,
+        color_space;
 
     if (value.indexOf('#') == 0) {
         color_space = 'rgb';
