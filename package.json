@@ -1,0 +1,29 @@
+{
+  "name": "darkenize.js",
+  "version": "1.0.0",
+  "description": "colorize for dark theme",
+  "main": "src/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/se0kjun/darkenize.js.git"
+  },
+  "keywords": [
+    "dark",
+    "theme"
+  ],
+  "author": "Seokjun Hong",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/se0kjun/darkenize.js/issues"
+  },
+  "homepage": "https://github.com/se0kjun/darkenize.js#readme",
+  "devDependencies": {
+    "gulp": "^3.9.1",
+    "gulp-concat": "^2.6.0",
+    "gulp-uglify": "^2.0.0",
+    "lmn-gulp-tasks": "^7.0.1"
+  }
+}

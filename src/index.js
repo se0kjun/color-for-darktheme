@@ -12,16 +12,16 @@ function darkenize() {
     ];
 
     this.color_preset = {
-        'text': {'threshold':, 'control':},
-        'background': {'threshold':, 'control':},
-        'border': {'threshold':, 'control':}
+        // 'text': {'threshold':, 'control':},
+        // 'background': {'threshold':, 'control':},
+        // 'border': {'threshold':, 'control':}
     };
 
     // svg?
     this.stop_elem = [];
     this.dynamic_coloring = false;
-    this.brightness_threshold = ;
-    this.brightness_control = ;
+    // this.brightness_threshold = ;
+    // this.brightness_control = ;
 }
 
 darkenize.prototype.autoColorize = function() {
