@@ -32,10 +32,24 @@ function darkenize() {
     // this.brightness_control = ;
 }
 
-darkenize.prototype.autoColorize = function() {
+darkenize.prototype.autoColorize = function(node) {
+    var elements;
+    
+    if (node) {
+        elements = node;
+    } else {
+        if (this.stop_elem.length != 0) {
+            elements = document.querySelectorAll("*:not(" + this.stop_elem.join("):not(") + ")");
+        } else {
+            elements = document.querySelectorAll("*");
+        }
+    }
+    elements.forEach(function(item) {
+        this.setColorForDarkTheme(item);
+    }, this);
 };
 
-darkenize.prototype.setColorForDarkTheme = function(node, brightness_threshold, brightness_control, preset) {
+darkenize.prototype.setColorForDarkTheme = function(node) {
     var computedStyle;
 
     if (typeof window !== undefined)
@@ -43,47 +57,42 @@ darkenize.prototype.setColorForDarkTheme = function(node, brightness_threshold, 
     else
         throw "This method is only available in web browser";
 
-    node.style.background-color = 
-        this.getColorForDarkTheme(computedStyle["background-color"], brightness_threshold, brightness_control, preset);
-    node.style.color = 
-        this.getColorForDarkTheme(computedStyle["color"], brightness_threshold, brightness_control, preset);
-    node.style.border-bottom-color = 
-        this.getColorForDarkTheme(computedStyle["border-bottom-color"], brightness_threshold, brightness_control, preset);
-    node.style.border-top-color = 
-        this.getColorForDarkTheme(computedStyle["border-top-color"], brightness_threshold, brightness_control, preset);
-    node.style.border-left-color = 
-        this.getColorForDarkTheme(computedStyle["border-left-color"], brightness_threshold, brightness_control, preset);
-    node.style.border-right-color = 
-        this.getColorForDarkTheme(computedStyle["border-right-color"], brightness_threshold, brightness_control, preset);
-
+    this.dark_theme_attribute.forEach(function(item) {
+        node.style.setProperty(item.value, 
+                               this.getColorForDarkTheme(computedStyle[item.value], this.color_preset[item.type]));
+    }, this);
+    
     return node;
 };
 
 //0 ≤ brightness_threshold ≤ 1 and 0 ≤ brightness_control ≤ 1
-darkenize.prototype.getColorForDarkTheme = function(value, brightness_threshold, brightness_control, preset) {
+darkenize.prototype.getColorForDarkTheme = function(value, preset) {
     var color = darkenize.parseColor(value),
         dark_theme_color = value;
 
-    var _brightness_threshold = brightness_threshold || 0.5,
-        _brightness_control = brightness_control || 0.3,
+//    var _brightness_threshold = brightness_threshold || 0.5,
+//        _brightness_control = brightness_control || 0.3,
+//        _brightness_weight = 1;
+    var _brightness_threshold = preset.threshold,
+        _brightness_control = preset.control,
         _brightness_weight = 1;
 
     if (color.space == 'rgb') {
         var hsv_color = darkenize.rgb2hsv(color.value[0], color.value[1], color.value[2]);
         
         if (hsv_color.v > _brightness_threshold) {
-            if (brightness_control)
-                hsv_color.v *= _brightness_control;
-            else
+//            if (brightness_control === undefined)
+//                hsv_color.v *= _brightness_control;
+//            else
                 hsv_color.v *= (_brightness_control * _brightness_weight);
             dark_theme_color = darkenize.hsv2rgb(hsv_color.h, hsv_color.s, hsv_color.v, 'hex');
         }
     }
     else if (color.space == 'hsv') {
         if (color.value[2] > _brightness_threshold) {
-            if (brightness_control) 
-                color.value[2] *= _brightness_control;
-            else
+//            if (brightness_control === undefined) 
+//                color.value[2] *= _brightness_control;
+//            else
                 color.value[2] *= (_brightness_control * _brightness_weight);
             dark_theme_color = darkenize.hsv2rgb(color.value[0], color.value[1], color.value[2], 'hex');
         }
@@ -213,4 +222,4 @@ darkenize.parseColor = function(value) {
     }
 }
 
-window.darkenize = module.exports = darkenize;
+window.darkenize = darkenize;
