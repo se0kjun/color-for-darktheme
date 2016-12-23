@@ -3,22 +3,30 @@
 //border, font-color, background-color except for background-image
 function darkenize() {
     this.dark_theme_attribute = [
-        'background-color', 
-        'color', 
-        'border-bottom-color', 
-        'border-top-color', 
-        'border-left-color', 
-        'border-right-color'
+        {'type': 'background', 'value': 'background-color'}, 
+        {'type': 'text', 'value': 'color'}, 
+        {'type': 'border', 'value': 'border-bottom-color'}, 
+        {'type': 'border', 'value': 'border-top-color'}, 
+        {'type': 'border', 'value': 'border-left-color'}, 
+        {'type': 'border', 'value': 'border-right-color'}
     ];
 
     this.color_preset = {
-        // 'text': {'threshold':, 'control':},
-        // 'background': {'threshold':, 'control':},
-        // 'border': {'threshold':, 'control':}
+         'text': {'threshold': 0.3, 'control': 1.4},
+         'background': {'threshold': 0.7, 'control': 0.6},
+         'border': {'threshold': 0.3, 'control': 1.4}
     };
 
     // svg?
-    this.stop_elem = [];
+    this.stop_elem = [
+        'meta',
+        'head',
+        'link',
+        'script',
+        'style',
+        'title',
+        'svg'
+    ];
     this.dynamic_coloring = false;
     // this.brightness_threshold = ;
     // this.brightness_control = ;
