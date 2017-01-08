@@ -81,22 +81,28 @@ darkenize.prototype.getColorForDarkTheme = function(value, preset) {
     if (color.space == 'rgb') {
         var hsv_color = darkenize.rgb2hsv(color.value[0], color.value[1], color.value[2]);
         
-        if (hsv_color.v > _brightness_threshold) {
-//            if (brightness_control === undefined)
-//                hsv_color.v *= _brightness_control;
-//            else
-                hsv_color.v *= (_brightness_control * _brightness_weight);
+        if (preset.flag == 'gt' && hsv_color.v > _brightness_threshold) {
+            hsv_color.v = ((_brightness_control * _brightness_weight) * hsv_color.v > 1) 
+                    ? 1 : ((_brightness_control * _brightness_weight) * hsv_color.v);
             dark_theme_color = darkenize.hsv2rgb(hsv_color.h, hsv_color.s, hsv_color.v, 'hex');
+        }
+        else if (preset.flag == 'lt' && hsv_color.v < _brightness_threshold) {
+            hsv_color.v = ((_brightness_control * _brightness_weight) * hsv_color.v > 1) 
+                    ? 1 : ((_brightness_control * _brightness_weight) * hsv_color.v);
+            dark_theme_color = darkenize.hsv2rgb(hsv_color.h, hsv_color.s, hsv_color.v, 'hex');            
         }
     }
     else if (color.space == 'hsv') {
-        if (color.value[2] > _brightness_threshold) {
-//            if (brightness_control === undefined) 
-//                color.value[2] *= _brightness_control;
-//            else
-                color.value[2] *= (_brightness_control * _brightness_weight);
+        if (preset.flag == 'gt' && color.value[2] > _brightness_threshold) {
+            color.value[2] = ((_brightness_control * _brightness_weight) * color.value[2] > 1)
+                ? 1 : (_brightness_control * _brightness_weight) * color.value[2];
             dark_theme_color = darkenize.hsv2rgb(color.value[0], color.value[1], color.value[2], 'hex');
         }
+        else if (preset.flag == 'lt' && color.value[2] < _brightness_threshold) {
+            color.value[2] = ((_brightness_control * _brightness_weight) * color.value[2] > 1)
+                ? 1 : (_brightness_control * _brightness_weight) * color.value[2];
+            dark_theme_color = darkenize.hsv2rgb(color.value[0], color.value[1], color.value[2], 'hex');
+        }        
     }
 
     return dark_theme_color;
