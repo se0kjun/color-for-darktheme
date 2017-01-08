@@ -193,7 +193,7 @@ darkenize.parseColor = function(value) {
     var param,
         color_space;
 
-    if (value.indexOf('#') == 0) {
+    if (!value.indexOf('#')) {
         color_space = 'rgb';
 
         //shorthand hex
@@ -210,13 +210,13 @@ darkenize.parseColor = function(value) {
             result & 255
         ];
     }
-    else if (value.indexOf('rgb' || 'rgba')) {
+    else if (!value.indexOf('rgb' || 'rgba')) {
         color_space = 'rgb';
         param = value.match(/([0-9]*[.])?[0-9]+/g).map(function(item) {
             return parseFloat(item);
         });
     }
-    else if (value.indexOf('hsv' || 'hsvl')) {
+    else if (!value.indexOf('hsv' || 'hsvl')) {
         color_space = 'hsv';
         param = value.match(/([0-9]*[.])?[0-9]+/g).map(function(item) {
             return parseFloat(item);
