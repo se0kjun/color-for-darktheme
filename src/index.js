@@ -12,9 +12,9 @@ function darkenize() {
     ];
 
     this.color_preset = {
-         'text': {'threshold': 0.3, 'control': 1.4},
-         'background': {'threshold': 0.7, 'control': 0.6},
-         'border': {'threshold': 0.3, 'control': 1.4}
+         'text': {'threshold': 1, 'control': 2, 'flag': 'lt'},
+         'background': {'threshold': 0.4, 'control': 0.2, 'flag': 'gt'},
+         'border': {'threshold': 0.3, 'control': 1.4, 'flag': 'gt'}
     };
 
     // svg?
@@ -25,7 +25,8 @@ function darkenize() {
         'script',
         'style',
         'title',
-        'svg'
+        'svg',
+        'pre'
     ];
     this.dynamic_coloring = false;
     // this.brightness_threshold = ;
