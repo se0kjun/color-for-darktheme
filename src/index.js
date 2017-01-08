@@ -229,4 +229,7 @@ darkenize.parseColor = function(value) {
     }
 }
 
-window.darkenize = darkenize;
+if (typeof module !== 'undefined' && typeof module.exports !== 'undefined')
+    module.exports = darkenize;
+else
+    window.darkenize = darkenize;
