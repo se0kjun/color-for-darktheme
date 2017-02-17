@@ -26,7 +26,8 @@ function darkenize() {
         'style',
         'title',
         'svg',
-        'pre'
+        'pre',
+        'input'
     ];
     this.dynamic_coloring = false;
     // this.brightness_threshold = ;
@@ -40,14 +41,18 @@ darkenize.prototype.autoColorize = function(node) {
         elements = node;
     } else {
         if (this.stop_elem.length != 0) {
-            elements = document.querySelectorAll("*:not(" + this.stop_elem.join("):not(") + ")");
+            var excludeElemQuery = "*";
+            this.stop_elem.forEach(function(elem) {
+                excludeElemQuery += (":not(" + elem + " *):not(" + elem + ")");
+            });
+            elements = $(excludeElemQuery);
         } else {
             elements = document.querySelectorAll("*");
         }
     }
-    elements.forEach(function(item) {
+    elements.each($.proxy(function(idx, item) {
         this.setColorForDarkTheme(item);
-    }, this);
+    }, this));
 };
 
 darkenize.prototype.setColorForDarkTheme = function(node) {
