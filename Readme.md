@@ -16,3 +16,7 @@ There is many plugins or application for changing to dark-theme. However, It cha
 ##Future work
 
 I am planning to implement command line version for node.js. In command line, It can generate automatically the dark-theme style sheet.
+
+##Reference
+
+[darkenize-chrome-extension](https://github.com/se0kjun/darkenize-chrome-extension)
